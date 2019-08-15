@@ -1,6 +1,6 @@
 import { Component,  ChangeDetectionStrategy } from '@angular/core';
 import { ProductService } from './product.service';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
 
 
@@ -13,14 +13,22 @@ export class ProductListComponent {
   pageTitle = 'Product List';
   errorMessage = '';
   categories;
+  selectedCategoryId = 1;
 
   products$ = this.productService.productsWithCategory$
-  .pipe(
-    catchError(err => {
-      this.errorMessage = err;
-      return EMPTY;
+    .pipe(
+      catchError(err => {
+        this.errorMessage = err;
+        return EMPTY;
     })
   );
+
+  productsSimpleFilter$ = this.productService.productsWithCategory$
+    .pipe(
+      map(products =>
+        products.filter(product =>
+          this.selectedCategoryId ? product.categoryId === this.selectedCategoryId : true))
+    );
 
 
   constructor(private productService: ProductService) { }
