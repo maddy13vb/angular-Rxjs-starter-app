@@ -68,6 +68,11 @@ selectedProductChanged(selectedProductId: number): void {
   this.productSelectedSubject.next(selectedProductId);
 }
 
+addProduct(newProduct?: Product) {
+  newProduct = newProduct || this.fakeProduct();
+  this.productInsertedSubject.next(newProduct);
+}
+
   private fakeProduct() {
     return {
       id: 42,
