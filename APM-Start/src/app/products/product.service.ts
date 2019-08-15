@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { Observable, throwError, combineLatest, BehaviorSubject, Subject, merge } from 'rxjs';
-import { catchError, tap, map, scan } from 'rxjs/operators';
+import { catchError, tap, map, scan, shareReplay } from 'rxjs/operators';
 
 import { Product } from './product';
 import { Supplier } from '../suppliers/supplier';
@@ -33,7 +33,8 @@ productsWithCategory$ = combineLatest([
     category: categories.find(c => product.categoryId === c.id).name,
     searchKey: [product.productName]
   }) as Product)
-  )
+  ),
+  shareReplay(1)
 );
 
 private productSelectedSubject = new BehaviorSubject<number>(0);
@@ -47,7 +48,8 @@ selectedProduct$ = combineLatest([
     map(([products, selectedProductId]) =>
       products.find(product => product.id === selectedProductId)
       ),
-      tap(product => console.log('selectedProduct', product))
+      tap(product => console.log('selectedProduct', product)),
+      shareReplay(1)
   );
 
 private productInsertedSubject = new Subject<Product>();
