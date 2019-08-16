@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { throwError, of } from 'rxjs';
-import { map, tap, concatMap, mergeMap, switchMap } from 'rxjs/operators';
+import { map, tap, concatMap, mergeMap, switchMap, shareReplay, catchError } from 'rxjs/operators';
 import { Supplier } from './supplier';
 
 @Injectable({
@@ -11,6 +11,12 @@ import { Supplier } from './supplier';
 export class SupplierService {
   suppliersUrl = 'api/suppliers';
 
+  suppliers$ = this.http.get<Supplier[]>(this.suppliersUrl)
+  .pipe(
+    tap(data => console.log('suppliers', JSON.stringify(data))),
+    shareReplay(1),
+    catchError(this.handleError)
+  );
   suppliersWithMap$ = of(1, 5, 8)
     .pipe(
       map(id => this.http.get<Supplier>(`${this.suppliersUrl}/${id}`)
@@ -38,9 +44,9 @@ suppliersWithMergeMap$ = of(1, 5, 8)
     // this.suppliersWithMap$
     //   .subscribe(
     //     item => console.log('map result', item)
-    this.suppliersWithConcatMap$.subscribe(item => console.log('concatMap result', item));
-    this.suppliersWithMergeMap$.subscribe(item => console.log('mergeMap result', item));
-    this.suppliersWithSwitchMap$.subscribe(item => console.log('switchMap result', item));
+    // this.suppliersWithConcatMap$.subscribe(item => console.log('concatMap result', item));
+    // this.suppliersWithMergeMap$.subscribe(item => console.log('mergeMap result', item));
+    // this.suppliersWithSwitchMap$.subscribe(item => console.log('switchMap result', item));
   }
 
 

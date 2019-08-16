@@ -4,7 +4,6 @@ import { catchError, map, startWith } from 'rxjs/operators';
 import { EMPTY, Subject, combineLatest, BehaviorSubject } from 'rxjs';
 import { ProductCategoryService } from '../product-categories/product-category.service';
 
-
 @Component({
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.css'],
